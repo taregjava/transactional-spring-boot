@@ -1,0 +1,36 @@
+# Security Configuration
+security:
+  ignored: /**
+
+# Hibernate and DataSource Configuration
+spring:
+  security:
+    user:
+      name: tareg
+      password: 0912658511
+  datasource:
+    url: jdbc:postgresql://dpg-cjdj930q339s73aui8p0-a.oregon-postgres.render.com:5432/database_dwh7?sslmode=require
+    username: database_dwh7_user
+    password: KBjei2Pk4olZO2Z2LJ9OerxlcOvLRopn
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 60000  # Optional: Set the connection timeout as needed
+
+    jpa:
+      hibernate:
+        ddl-auto: update
+      properties:
+        hibernate:
+          format_sql: true
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+# JWT Configuration
+jwt:
+  secret: mySecretKey
+  expiration: 3600000
+
+# AWS Configuration
+aws:
+  accessKeyId: AKI
+  secretKey: mK

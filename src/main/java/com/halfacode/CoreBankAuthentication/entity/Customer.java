@@ -27,4 +27,5 @@ public class Customer {
 
     @Email(message = "Invalid email format")
     private String email;
+    private String ipAddress; // New field for storing IP address
 }

@@ -1,6 +1,7 @@
 package com.halfacode.CoreBankAuthentication.service;
 
 import com.halfacode.CoreBankAuthentication.entity.Account;
+import com.halfacode.CoreBankAuthentication.exceptions.AccountNotFoundException;
 import com.halfacode.CoreBankAuthentication.repoistory.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,14 @@ public class AccountService {
         // Implement the logic to delete an account from the repository
         accountRepository.deleteById(accountId);
     }
+    public void updateAccountBalance(Long accountId, double amount) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
+        double updatedBalance = account.getBalance() + amount;
+        account.setBalance(updatedBalance);
+        accountRepository.save(account);
+    }
     // Add more methods as needed for account-related operations
 }
 

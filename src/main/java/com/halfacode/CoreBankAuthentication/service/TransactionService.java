@@ -1,12 +1,14 @@
 package com.halfacode.CoreBankAuthentication.service;
 
+import com.halfacode.CoreBankAuthentication.config.TransactionProducer;
 import com.halfacode.CoreBankAuthentication.entity.Account;
 import com.halfacode.CoreBankAuthentication.entity.Transaction;
+import com.halfacode.CoreBankAuthentication.event.TransactionCreatedEvent;
 import com.halfacode.CoreBankAuthentication.exceptions.AccountNotFoundException;
 import com.halfacode.CoreBankAuthentication.exceptions.InsufficientBalanceException;
 import com.halfacode.CoreBankAuthentication.repoistory.AccountRepository;
 import com.halfacode.CoreBankAuthentication.repoistory.TransactionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,14 +19,20 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
+    private final TransactionProducer transactionProducer;
 
-    public TransactionService(TransactionRepository transactionRepository, AccountRepository accountRepository) {
+    private final ApplicationEventPublisher eventPublisher;
+    public TransactionService(TransactionRepository transactionRepository, AccountRepository accountRepository, TransactionProducer transactionProducer, ApplicationEventPublisher eventPublisher) {
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
+        this.transactionProducer = transactionProducer;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
     public Transaction createTransaction(Transaction transaction) {
+
+
         // Perform any business logic or validations here
         // For example, you might want to check if the sender and receiver accounts are valid and have sufficient balance, etc.
 
@@ -55,9 +63,14 @@ public class TransactionService {
         // Save the updated account balances in the database
         accountRepository.save(senderAccount);
         accountRepository.save(receiverAccount);
+        transactionProducer.sendTransaction(transaction);
 
-        // Save the transaction in the database using the transactionRepository
-        return transactionRepository.save(transaction);
+        Transaction createdTransaction = transactionRepository.save(transaction);
+
+        // Publish transaction-related events
+        eventPublisher.publishEvent(new TransactionCreatedEvent(this, createdTransaction));
+
+        return createdTransaction;
     }
     public List<Transaction> getTransactionsByAccountId(Long accountId) {
         // Implement the logic to fetch transactions for a given account from the repository

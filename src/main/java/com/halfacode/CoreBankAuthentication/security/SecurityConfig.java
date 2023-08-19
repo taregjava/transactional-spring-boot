@@ -18,7 +18,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .addFilterBefore(apiKeyAuthenticationFilter, BasicAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/api/customers/**").permitAll() // Allow access to /api/customers without authentication
+                .antMatchers("/api/customers/**").permitAll()
+                .antMatchers("/api/user/**").permitAll()// Allow access to /api/customers without authentication
                 .and()
                 .httpBasic()
                 .and()
