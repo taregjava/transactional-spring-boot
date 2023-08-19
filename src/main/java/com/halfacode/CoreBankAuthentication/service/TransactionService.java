@@ -1,6 +1,6 @@
 package com.halfacode.CoreBankAuthentication.service;
 
-import com.halfacode.CoreBankAuthentication.config.TransactionProducer;
+
 import com.halfacode.CoreBankAuthentication.entity.Account;
 import com.halfacode.CoreBankAuthentication.entity.Transaction;
 import com.halfacode.CoreBankAuthentication.event.TransactionCreatedEvent;
@@ -19,13 +19,13 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
-    private final TransactionProducer transactionProducer;
+  //  private final TransactionProducer transactionProducer;
 
     private final ApplicationEventPublisher eventPublisher;
-    public TransactionService(TransactionRepository transactionRepository, AccountRepository accountRepository, TransactionProducer transactionProducer, ApplicationEventPublisher eventPublisher) {
+    public TransactionService(TransactionRepository transactionRepository, AccountRepository accountRepository, ApplicationEventPublisher eventPublisher) {
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
-        this.transactionProducer = transactionProducer;
+     //   this.transactionProducer = transactionProducer;
         this.eventPublisher = eventPublisher;
     }
 
@@ -63,7 +63,7 @@ public class TransactionService {
         // Save the updated account balances in the database
         accountRepository.save(senderAccount);
         accountRepository.save(receiverAccount);
-        transactionProducer.sendTransaction(transaction);
+     //   transactionProducer.sendTransaction(transaction);
 
         Transaction createdTransaction = transactionRepository.save(transaction);
 
